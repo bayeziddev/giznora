@@ -139,8 +139,10 @@ jobs:
     name: Storefront
     needs: api
     runs-on: ubuntu-latest
-    # Belt and braces: Pages only accepts the default branch anyway.
-    if: always() && github.ref == 'refs/heads/main'
+    # Pages is optional until it is enabled once in repository Settings. This
+    # keeps Worker deployment green while the API is being brought online.
+    # Set DEPLOY_GITHUB_PAGES=true after enabling Pages with source=GitHub Actions.
+    if: always() && github.ref == 'refs/heads/main' && vars.DEPLOY_GITHUB_PAGES == 'true'
     environment:
       name: github-pages
       url: ${{ steps.pages.outputs.page_url }}
@@ -189,11 +191,11 @@ jobs:
       - name: Build
         env:
           VITE_BASE: ${{ steps.site.outputs.base }}
-          VITE_API_BASE: ${{ needs.api.outputs.api_url || vars.API_BASE_URL || 'https://giznora.workers.dev' }}
+          VITE_API_BASE: ${{ needs.api.outputs.api_url || vars.API_BASE_URL || 'https://giznora.giznora.workers.dev' }}
         run: |
           if [ -z "$VITE_API_BASE" ]; then
             echo "::warning::No API address was resolved; using the temporary Worker preview address. The storefront will publish, but product data will appear after the Worker is deployed."
-            export VITE_API_BASE="https://giznora.workers.dev"
+            export VITE_API_BASE="https://giznora.giznora.workers.dev"
           fi
           npm run build --workspace web
 
@@ -213,7 +215,7 @@ jobs:
       - name: Generate sitemap
         if: needs.api.result == 'success'
         env:
-          VITE_API_BASE: ${{ needs.api.outputs.api_url || vars.API_BASE_URL || 'https://giznora.workers.dev' }}
+          VITE_API_BASE: ${{ needs.api.outputs.api_url || vars.API_BASE_URL || 'https://giznora.giznora.workers.dev' }}
           CUSTOM_DOMAIN: ${{ steps.site.outputs.domain }}
           PAGES_BASE: ${{ steps.site.outputs.base }}
         run: |
@@ -226,11 +228,6 @@ jobs:
           SITE_URL="$SITE_URL" node scripts/generate-sitemap.mjs
 
       - uses: actions/configure-pages@v5
-        with:
-          # The rebranded repository may not have Pages enabled yet. Allow the
-          # first deployment to create the Pages site instead of returning
-          # "Get Pages site ... Not Found".
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:

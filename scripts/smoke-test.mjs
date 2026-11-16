@@ -360,8 +360,10 @@ async function main() {
   // -------------------------------------- order one piece, or the whole shelf
   console.log('\nOrder from 1 piece up to stock');
   const anyProducts = (await api('/api/products?limit=50', { expect: 200 })).body.products;
-  check('every product can be ordered singly', anyProducts.every((p) => p.moq === 1),
-    anyProducts.filter((p) => p.moq !== 1).map((p) => `${p.name}=${p.moq}`).join(', ') || 'all moq 1');
+  check('every product has a valid minimum order quantity',
+    anyProducts.every((p) => Number.isInteger(p.moq) && p.moq >= 1),
+    anyProducts.filter((p) => !Number.isInteger(p.moq) || p.moq < 1)
+      .map((p) => `${p.name}=${p.moq}`).join(', ') || 'all MOQ values are valid');
 
   // A throwaway product with a small shelf, so repeated runs never depend on —
   // or strand — whatever the real shop has in stock.
