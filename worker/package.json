@@ -1,5 +1,5 @@
 {
-  "name": "@neeldigitech/worker",
+  "name": "@giznora/worker",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,8 +7,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
-    "migrate:local": "wrangler d1 migrations apply neeldigitech-db --local",
-    "migrate:remote": "wrangler d1 migrations apply neeldigitech-db --remote"
+    "migrate:local": "wrangler d1 migrations apply giznora-db --local",
+    "migrate:remote": "wrangler d1 migrations apply giznora-db --remote"
   },
   "dependencies": {
     "hono": "^4.6.14"

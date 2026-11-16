@@ -1,4 +1,4 @@
-# Neel Digi Tech — Admin Dashboard Guide
+# Giznora — Admin Dashboard Guide
 
 Everything you can do from the dashboard, start to finish. No technical
 knowledge needed.
@@ -30,16 +30,16 @@ knowledge needed.
 ## 1. Signing in
 
 Type your site address with `/admin` on the end —
-`https://neeldigitech.com/admin`. There is deliberately **no link to the
+`https://giznora.com/admin`. There is deliberately **no link to the
 dashboard anywhere on the public site**, so customers never see it; bookmark
 the address instead.
 
 | | |
 |---|---|
-| **Username** | `neeldigitech` |
+| **Username** | `giznora` |
 | **Password** | set when the site was deployed |
 
-The username is not case-sensitive — `NeelDigiTech` works too.
+The username is not case-sensitive — `Giznora` works too.
 
 **Change the password after your first sign-in.** The password was shared in a
 chat message while the site was being built, so treat it as known to others.

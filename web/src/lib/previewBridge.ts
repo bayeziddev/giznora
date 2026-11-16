@@ -13,7 +13,7 @@
  */
 
 /** Marks our messages so a stray postMessage from anything else is ignored. */
-export const PREVIEW_SOURCE = 'neeldigitech-db-preview';
+export const PREVIEW_SOURCE = 'giznora-db-preview';
 
 export interface PreviewRouteMessage {
   source: typeof PREVIEW_SOURCE;

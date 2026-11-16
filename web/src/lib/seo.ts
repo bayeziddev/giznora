@@ -41,7 +41,7 @@ interface SeoOptions {
   noindex?: boolean;
 }
 
-const SITE_TITLE_SUFFIX = ' — Neel Digi Tech';
+const SITE_TITLE_SUFFIX = ' — Giznora';
 
 export function useSeo({ title, description, canonical, noindex = false }: SeoOptions): void {
   useEffect(() => {

@@ -1,8 +1,8 @@
 {
-  "name": "neeldigitech.com",
+  "name": "giznora.com",
   "version": "1.0.0",
   "private": true,
-  "description": "Neel Digi Tech — full-stack smart technology marketplace on Cloudflare Workers + D1 with a GitHub Pages storefront.",
+  "description": "Giznora — full-stack smart technology marketplace on Cloudflare Workers + D1 with a GitHub Pages storefront.",
   "workspaces": [
     "worker",
     "web"

@@ -14,7 +14,7 @@
  *
  * Run it against a local stack:
  *
- *   cd worker && npx wrangler d1 migrations apply neeldigitech-db --local
+ *   cd worker && npx wrangler d1 migrations apply giznora-db --local
  *   printf 'JWT_SECRET="local-test-secret"\n' > worker/.dev.vars
  *   (cd worker && npx wrangler dev --local --port 8788 &)
  *   curl -s -X POST http://127.0.0.1:8788/api/admin/setup -H 'Content-Type: application/json' \

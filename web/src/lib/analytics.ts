@@ -13,7 +13,7 @@
  *     not look like customer behaviour.
  */
 
-export const GA_MEASUREMENT_ID = 'G-WD8KD657C3';
+export const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID ?? '';
 
 const CURRENCY = 'BDT';
 

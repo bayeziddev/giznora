@@ -1,10 +1,10 @@
 <div align="center">
-  <img src="web/public/brand/logo.svg" alt="Neel Digi Tech" width="330">
+  <img src="web/public/brand/logo.svg" alt="Giznora" width="330">
   <p><strong>Tech gadget marketplace — Cloudflare Workers + D1 API, GitHub Pages storefront.</strong></p>
 </div>
 
 ---
-Live demo [tech-nill](https://bayzed123.github.io/neeldigitech.com/)
+Live demo [tech-nill](https://bayzed123.github.io/giznora.com/)
 ## What this is
 
 A complete storefront and back office for a gadget wholesaler:
@@ -90,11 +90,11 @@ The scripts also accept the standard `CLOUDFLARE_API_TOKEN` /
 
 | Variable | What it does |
 |---|---|
-| `API_DOMAIN` | Hostname for the API, e.g. `api.neeldigitech.com`. Requires the domain to be a **zone in your Cloudflare account**; if it is not, the deploy says so and falls back to workers.dev. |
-| `CUSTOM_DOMAIN` | e.g. `neeldigitech.com` — serves Pages from the root and writes a `CNAME` |
+| `API_DOMAIN` | Hostname for the API, e.g. `api.giznora.com`. Requires the domain to be a **zone in your Cloudflare account**; if it is not, the deploy says so and falls back to workers.dev. |
+| `CUSTOM_DOMAIN` | e.g. `giznora.com` — serves Pages from the root and writes a `CNAME` |
 | `WORKERS_SUBDOMAIN` | Alternative to `API_DOMAIN`: registers your account's one-time `*.workers.dev` name |
 | `API_BASE_URL` | Alternative again: an API address you route yourself |
-| `ADMIN_USERNAME` | Dashboard sign-in name, e.g. `neeldigitech` |
+| `ADMIN_USERNAME` | Dashboard sign-in name, e.g. `giznora` |
 | `ADMIN_NAME` | Display name for the owner account |
 
 > Set `ADMIN_USERNAME` (variable) and `ADMIN_PASSWORD` (secret). Without them the
@@ -121,29 +121,29 @@ Push to the deployment branch, or run the **Deploy** workflow manually. On the f
 
 Re-runs reuse everything — the provisioning step is idempotent.
 
-### Going live on neeldigitech.com
+### Going live on giznora.com
 
 The intended production layout, using the domain you already own:
 
 | | Address | Served by |
 |---|---|---|
-| Storefront + dashboard | `neeldigitech.com` | GitHub Pages |
-| API | `api.neeldigitech.com` | Cloudflare Worker |
+| Storefront + dashboard | `giznora.com` | GitHub Pages |
+| API | `api.giznora.com` | Cloudflare Worker |
 
 Steps, once the domain's nameservers point at Cloudflare:
 
-1. Add `neeldigitech.com` as a zone in your Cloudflare account.
-2. Set repository variables `CUSTOM_DOMAIN=neeldigitech.com` and
-   `API_DOMAIN=api.neeldigitech.com`.
-3. In **Settings → Pages**, set the custom domain to `neeldigitech.com`.
+1. Add `giznora.com` as a zone in your Cloudflare account.
+2. Set repository variables `CUSTOM_DOMAIN=giznora.com` and
+   `API_DOMAIN=api.giznora.com`.
+3. In **Settings → Pages**, set the custom domain to `giznora.com`.
    In Cloudflare DNS, the records pointing at GitHub Pages must be **DNS only**
    (grey cloud), not proxied — Pages terminates its own TLS.
-4. Re-run **Deploy**. wrangler creates the `api.neeldigitech.com` custom domain
+4. Re-run **Deploy**. wrangler creates the `api.giznora.com` custom domain
    itself; nothing to click.
 
 **Until the domain is ready**, give the API a temporary address instead: set
 `WORKERS_SUBDOMAIN` to a name you like and the API lands on
-`https://neeldigitech.<name>.workers.dev`. That name is account-wide and
+`https://giznora.<name>.workers.dev`. That name is account-wide and
 effectively permanent, so the deploy never invents one — it registers only what
 you ask for.
 
@@ -184,7 +184,7 @@ Staff sign in with a **username**, not an email address.
 ```bash
 npm run typecheck                 # worker + web
 node scripts/smoke-test.mjs       # 79 assertions against a running API
-node scripts/demo-orders.mjs http://127.0.0.1:8787 neeldigitech yourpassword 14
+node scripts/demo-orders.mjs http://127.0.0.1:8787 giznora yourpassword 14
 ```
 
 `smoke-test.mjs` covers tier pricing, MOQ enforcement, the stock ledger, oversell

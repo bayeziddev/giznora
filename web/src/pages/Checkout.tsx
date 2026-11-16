@@ -192,7 +192,7 @@ export function Checkout() {
   }
 
   if (placed) {
-    const shopNumber = (settings?.order_whatsapp || '8801511922073').replace(/\D/g, '');
+    const shopNumber = (settings?.order_whatsapp || '8801406180501').replace(/\D/g, '');
     const waHref = `https://wa.me/${shopNumber}?text=${encodeURIComponent(
       whatsappMessage({
         order: placed,

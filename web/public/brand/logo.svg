@@ -1,17 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 88" width="420" height="88" role="img" aria-label="Neel Digi Tech">
-  <defs>
-    <linearGradient id="gold" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FF7A18"/><stop offset="1" stop-color="#FFD75E"/></linearGradient>
-    <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16233C"/><stop offset="1" stop-color="#0A101E"/></linearGradient>
-  </defs>
-  <g transform="translate(5 5)">
-    <rect x="5" y="5" width="68" height="68" rx="20" fill="url(#chip)" stroke="url(#gold)" stroke-width="2"/>
-    <path d="M22 58V20l34 38V20" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M29 46h20" stroke="#22D3EE" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="39" cy="18" r="4" fill="#FFD75E"/>
-  </g>
-  <g font-family="Arial, Helvetica, sans-serif">
-    <text x="92" y="45" font-size="31" font-weight="800" letter-spacing="1.2" fill="#F8FAFC">NEEL</text>
-    <text x="188" y="45" font-size="31" font-weight="800" letter-spacing="1.2" fill="url(#gold)">DIGI TECH</text>
-    <text x="94" y="68" font-size="10" font-weight="700" letter-spacing="3.2" fill="#94A3B8">SMART TECH MARKETPLACE</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 112" width="500" height="112" role="img" aria-label="Giznora — গিজনোরা">
+<defs><linearGradient id="gold" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#FF7A18"/><stop offset=".55" stop-color="#FFC857"/><stop offset="1" stop-color="#FFE7A3"/></linearGradient><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#17284B"/><stop offset="1" stop-color="#07101F"/></linearGradient></defs>
+<rect x="6" y="6" width="100" height="100" rx="30" fill="url(#bg)" stroke="#FFC857" stroke-opacity=".55" stroke-width="2"/><path d="M30 82V29l50 53V29" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M41 63h28" stroke="#2DD4BF" stroke-width="5" stroke-linecap="round"/><circle cx="56" cy="25" r="5" fill="#FFE7A3"/>
+<g font-family="Arial, Noto Sans Bengali, sans-serif"><text x="132" y="57" font-size="42" font-weight="800" letter-spacing="1.2" fill="#F8FAFC">GIZNORA</text><text x="134" y="84" font-size="18" font-weight="700" letter-spacing="1.4" fill="url(#gold)">গিজনোরা</text><text x="244" y="84" font-size="10" font-weight="700" letter-spacing="2.6" fill="#94A3B8">SMART TECH MARKETPLACE</text></g>
 </svg>

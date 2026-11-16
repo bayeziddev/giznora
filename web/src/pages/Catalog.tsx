@@ -101,8 +101,8 @@ export function Catalog() {
   useSeo({
     title: q ? `Search: ${q}` : category ? `${heading} — Shop` : 'Shop All Products',
     description: category
-      ? `Browse ${heading} at Neel Digi Tech — genuine products, wholesale pricing, cash on delivery across Bangladesh.`
-      : 'Browse every product at Neel Digi Tech — phones, audio, wearables, power and more, at wholesale pricing.',
+      ? `Browse ${heading} at Giznora — genuine products, wholesale pricing, cash on delivery across Bangladesh.`
+      : 'Browse every product at Giznora — phones, audio, wearables, power and more, at wholesale pricing.',
     // Internal search results are thin, ever-changing, and near-infinite in
     // combination — the standard reason search pages get kept out of the
     // index while real category listings (a fixed, meaningful set) stay in it.

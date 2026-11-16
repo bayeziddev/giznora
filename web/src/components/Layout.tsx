@@ -94,7 +94,7 @@ export function Layout() {
   const nextTheme = theme === 'dark' ? 'light' : 'dark';
   // Settings arrive a moment after first paint; the bundled name keeps the
   // alt text and aria-label meaningful in the meantime.
-  const brandName = settings?.store_name || 'Neel Digi Tech';
+  const brandName = settings?.store_name || 'Giznora';
 
   // Sitewide structured data — Organization (so a knowledge-panel-style
   // result has somewhere to pull from) and WebSite with a SearchAction
@@ -108,7 +108,7 @@ export function Layout() {
           '@graph': [
             {
               '@type': 'Organization',
-              name: settings.store_name || 'Neel Digi Tech',
+              name: settings.store_name || 'Giznora',
               url: window.location.origin,
               logo: `${window.location.origin}${import.meta.env.BASE_URL}brand/logo-mark.svg`,
               ...(settings.support_phone
@@ -118,7 +118,7 @@ export function Layout() {
             },
             {
               '@type': 'WebSite',
-              name: settings.store_name || 'Neel Digi Tech',
+              name: settings.store_name || 'Giznora',
               url: window.location.origin,
               potentialAction: {
                 '@type': 'SearchAction',
@@ -278,7 +278,7 @@ export function Layout() {
                     href={settings.facebook_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Neel Digi Tech on Facebook"
+                    aria-label="Giznora on Facebook"
                     title="Follow us on Facebook"
                   >
                     <svg viewBox="0 0 24 24" width="19" height="19" fill="#fff" aria-hidden="true">
@@ -378,7 +378,7 @@ export function Layout() {
 
           <div className="footer-bot">
             <span>
-              © {new Date().getFullYear()} {settings?.store_name ?? 'Neel Digi Tech'}. All rights reserved.
+              © {new Date().getFullYear()} {settings?.store_name ?? 'Giznora'}. All rights reserved.
             </span>
 
             <span className="credits">

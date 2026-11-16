@@ -5,7 +5,7 @@
  * be changed from the dashboard without a redeploy.
  */
 
-const DEFAULT_NUMBER = '01511922073';
+const DEFAULT_NUMBER = '01406180501';
 
 /**
  * wa.me needs digits only, in full international form. Local Bangladeshi
