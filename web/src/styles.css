@@ -1652,7 +1652,7 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 }
 .social-row a:hover { background: #1877f2; border-color: #1877f2; transform: translateY(-2px); }
 
-/* Two actions per card: Shop now goes straight to checkout, Add to cart keeps
+/* Two actions per card: Order now goes straight to checkout, Add to cart keeps
    the shopper browsing. Equal columns so neither reads as the afterthought. */
 .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .card-actions .btn { padding-inline: 8px; font-size: 0.79rem; }

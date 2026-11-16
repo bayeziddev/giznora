@@ -27,7 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   /** Straight to checkout with this item only — the cart is left untouched. */
   function buyNow() {
-    trackSelectItem('Shop now', product);
+    trackSelectItem('Order now', product);
     setDirectBuy({
       product_id: product.id,
       qty: product.moq,
@@ -98,7 +98,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         <div className="card-actions">
           <button className="btn primary sm" disabled={!product.in_stock} onClick={buyNow}>
-            {product.in_stock ? 'Shop now' : 'Unavailable'}
+            {product.in_stock ? 'Order now' : 'Unavailable'}
           </button>
           <button
             className="btn ghost sm"

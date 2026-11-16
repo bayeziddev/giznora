@@ -77,7 +77,7 @@ export function Checkout() {
   const navigate = useNavigate();
   const { customer } = useCustomer();
 
-  // "Shop now" checks out one product on its own; the cart stays where it was.
+  // "Order now" checks out one product on its own; the cart stays where it was.
   const [direct] = useState(getDirectBuy);
   const lineItems = useMemo(
     () => (direct ? [{ product_id: direct.product_id, qty: direct.qty }] : cart.items),

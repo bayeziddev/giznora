@@ -366,7 +366,7 @@ export function Product() {
               className="btn primary lg block"
               disabled={!product.in_stock}
               onClick={() => {
-                trackSelectItem('Shop now', { ...product, qty });
+                trackSelectItem('Order now', { ...product, qty });
                 setDirectBuy({
                   product_id: product.id,
                   qty,
@@ -378,7 +378,7 @@ export function Product() {
                 navigate('/checkout');
               }}
             >
-              {product.in_stock ? 'Shop now' : 'Out of stock'}
+              {product.in_stock ? 'Order now' : 'Out of stock'}
             </button>
             <button
               className="btn ghost lg block"

@@ -68,7 +68,7 @@ export function Home() {
         */}
         <div className="hero-actions">
           <Link to="/catalog" className="btn primary lg">
-            Shop now — {data.categories.reduce((n, c) => n + (c.product_count ?? 0), 0)} products
+            Order now — {data.categories.reduce((n, c) => n + (c.product_count ?? 0), 0)} products
           </Link>
           <Link to="/track" className="btn ghost lg">
             Track your order
