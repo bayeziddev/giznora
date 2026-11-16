@@ -226,6 +226,11 @@ jobs:
           SITE_URL="$SITE_URL" node scripts/generate-sitemap.mjs
 
       - uses: actions/configure-pages@v5
+        with:
+          # The rebranded repository may not have Pages enabled yet. Allow the
+          # first deployment to create the Pages site instead of returning
+          # "Get Pages site ... Not Found".
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
