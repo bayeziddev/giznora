@@ -1,0 +1,146 @@
+name: Deploy
+
+# Production deployment to Cloudflare only. The Worker API and the ecommerce
+# storefront are deployed together from the main branch.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  api:
+    name: Worker API
+    runs-on: ubuntu-latest
+    outputs:
+      api_url: ${{ steps.bootstrap.outputs.api_url }}
+    env:
+      # Repository secrets are named CLOUD_FLARE_*; wrangler reads the
+      # CLOUDFLARE_* spellings, so both are exported from the same source.
+      CLOUD_FLARE_API: ${{ secrets.CLOUD_FLARE_API }}
+      CLOUD_FLARE_ACCOUNT_ID: ${{ secrets.CLOUD_FLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUD_FLARE_API }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUD_FLARE_ACCOUNT_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Provision Cloudflare resources
+        id: bootstrap
+        env:
+          API_DOMAIN: ${{ vars.API_DOMAIN }}
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          WORKERS_SUBDOMAIN: ${{ vars.WORKERS_SUBDOMAIN }}
+        run: node scripts/bootstrap-cf.mjs
+
+      - name: Apply D1 migrations
+        working-directory: worker
+        run: npx wrangler d1 migrations apply giznora-db --remote
+
+      - name: Deploy Worker
+        working-directory: worker
+        run: npx wrangler deploy
+
+      - name: Ensure Worker secrets
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          STEADFAST_API_KEY: ${{ secrets.STEADFAST_API_KEY || secrets.STEAT_FAST_API }}
+          STEADFAST_SECRET_KEY: ${{ secrets.STEADFAST_SECRET_KEY || secrets.STEAT_FAST_SECRET_KEY }}
+          STEADFAST_WEBHOOK_TOKEN: ${{ secrets.STEADFAST_WEBHOOK_TOKEN || secrets.STEAT_FAST_WEBHOOK_TOKEN }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          ADMIN_GEMINI_API_KEY: ${{ secrets.ADMIN_GEMINI_API_KEY || secrets.GEMINI_API_KEY }}
+          SUPPORT_GEMINI_API_KEY: ${{ secrets.SUPPORT_GEMINI_API_KEY || secrets.GEMINI_API_KEY }}
+          ALERT_GEMINI_API_KEY: ${{ secrets.ALERT_GEMINI_API_KEY || secrets.GEMINI_API_KEY }}
+          DEVLOPER_REPORT_GEMENI: ${{ secrets.DEVLOPER_REPORT_GEMENI || secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          DEV_REPORT_TRIGGER_TOKEN: ${{ secrets.DEV_REPORT_TRIGGER_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node scripts/provision-secrets.mjs
+
+      - name: Provision the dashboard owner
+        env:
+          D1_DATABASE_ID: ${{ steps.bootstrap.outputs.database_id }}
+          ADMIN_USERNAME: ${{ vars.ADMIN_USERNAME || secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_NAME: ${{ vars.ADMIN_NAME }}
+        run: node scripts/create-admin.mjs
+
+      - name: Verify live Worker
+        run: |
+          URL="${{ steps.bootstrap.outputs.api_url }}"
+          if [ -z "$URL" ]; then echo "No API URL resolved"; exit 1; fi
+          for i in $(seq 1 12); do
+            if curl -fsS --max-time 10 "$URL/health" > /tmp/health.json 2>/dev/null; then
+              echo "API is live: $URL"
+              cat /tmp/health.json
+              exit 0
+            fi
+            echo "waiting for the Worker and its certificate ($i/12)…"
+            sleep 15
+          done
+          echo "::error::Worker did not answer $URL/health"
+          exit 1
+
+  storefront:
+    name: Cloudflare Storefront
+    needs: api
+    if: needs.api.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUD_FLARE_API }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUD_FLARE_ACCOUNT_ID }}
+      VITE_BASE: /
+      VITE_API_BASE: ${{ needs.api.outputs.api_url || vars.API_BASE_URL || 'https://giznora.giznora.workers.dev' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build ecommerce storefront
+        run: npm run build --workspace web
+
+      - name: Prepare SPA fallback
+        run: |
+          cp web/dist/index.html web/dist/404.html
+          touch web/dist/.nojekyll
+
+      - name: Deploy storefront to Cloudflare Pages
+        run: npx wrangler pages deploy web/dist --project-name giznora --branch main --commit-dirty=true
+
+      - name: Verify live storefront
+        run: |
+          URL="https://giznora-elz.pages.dev"
+          for i in $(seq 1 12); do
+            if curl -fsS --max-time 10 "$URL/" | grep -qi 'Giznora'; then
+              echo "Storefront is live: $URL"
+              exit 0
+            fi
+            echo "waiting for Cloudflare Pages deployment ($i/12)…"
+            sleep 10
+          done
+          echo "::error::Storefront did not return Giznora HTML at $URL"
+          exit 1
