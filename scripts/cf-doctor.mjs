@@ -118,9 +118,14 @@ await probe('D1 databases listable', 'D1: Read (or Edit)', async () => {
 // green and the deploy dies a step later instead.
 await probe('D1 writes allowed', 'D1: Edit', async () => {
   if (!databaseId) throw new Error('skipped — no database resolved above');
-  await cf.call(`/d1/database/${databaseId}/query`, {
+  const path = `/d1/database/${databaseId}/query`;
+  await cf.call(path, {
     method: 'POST',
-    body: { sql: "UPDATE settings SET value = value WHERE key = '__doctor_write_probe__'" },
+    body: { sql: 'CREATE TABLE IF NOT EXISTS __giznora_doctor_probe (id INTEGER);' },
+  });
+  await cf.call(path, {
+    method: 'POST',
+    body: { sql: 'DROP TABLE IF EXISTS __giznora_doctor_probe;' },
   });
   const tables = await cf.call(`/d1/database/${databaseId}/query`, {
     method: 'POST',

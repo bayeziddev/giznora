@@ -37,19 +37,21 @@ const cf = client();
  * dies one step later — which is exactly what this check did on its first
  * outing.
  *
- * It also has to be a write D1 itself permits. Creating a scratch table looked
- * like the smallest such write, but D1 reserves the `_cf_` table prefix for its
- * own internals and its SQLite authorizer rejects the name outright — reported
- * as `7500 not authorized: SQLITE_AUTH`, indistinguishable at a glance from the
- * permission failure this exists to detect, and it sent one diagnosis badly
- * astray. A no-op UPDATE matching no rows is a genuine write, touches nothing,
- * and trips no reserved names.
+ * It also has to be a write D1 itself permits. The database may be completely
+ * empty on the first deployment, so probing a business table such as `settings`
+ * gives a misleading "no such table" error and looks like a permission failure.
+ * Create and immediately drop a uniquely named scratch table instead.
  */
 async function assertD1Writable(databaseId) {
   try {
-    await cf.call(`/d1/database/${databaseId}/query`, {
+    const path = `/d1/database/${databaseId}/query`;
+    await cf.call(path, {
       method: 'POST',
-      body: { sql: "UPDATE settings SET value = value WHERE key = '__doctor_write_probe__'" },
+      body: { sql: 'CREATE TABLE IF NOT EXISTS __giznora_write_probe (id INTEGER);' },
+    });
+    await cf.call(path, {
+      method: 'POST',
+      body: { sql: 'DROP TABLE IF EXISTS __giznora_write_probe;' },
     });
   } catch (err) {
     const denied = (err.errors ?? []).some((e) => e.code === 7500 || e.code === 10000);
