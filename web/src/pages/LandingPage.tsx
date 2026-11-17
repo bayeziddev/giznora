@@ -45,10 +45,10 @@ export function LandingPage() {
       .catch(() => setFailed(true));
   }, [slug]);
   useSeo({ title: campaign?.title || 'Campaign', description: campaign?.content.summary || undefined });
+  const countdown = useCountdown(campaign?.content.offerEndsAt);
   if (failed) return <main className="lp-missing"><span>GIZNORA</span><h1>এই অফারটি পাওয়া যাচ্ছে না</h1><p>পেজটি প্রকাশিত নেই অথবা ঠিকানাটি পরিবর্তিত হয়েছে।</p><a className="lp-cta" href="/">দোকানে ফিরে যান</a></main>;
   if (!campaign) return <main className="lp-loading" aria-label="পেজ লোড হচ্ছে"><span className="lp-loader" /></main>;
   const c = campaign.content;
-  const countdown = useCountdown(c.offerEndsAt);
   const destination = safeDestination(c.ctaUrl);
   const label = c.ctaLabel || 'অর্ডার করুন';
   async function orderNow() {
