@@ -9,6 +9,8 @@ import { admin } from './routes/admin';
 import { analytics } from './routes/analytics';
 import { content } from './routes/content';
 import { adminContent } from './routes/adminContent';
+import { landingPages } from './routes/landingPages';
+import { adminLandingPages } from './routes/adminLandingPages';
 import { account } from './routes/account';
 import { courierHook } from './routes/courierHook';
 import { reviews } from './routes/reviews';
@@ -70,6 +72,7 @@ app.get('/files/*', async (c) => {
 app.route('/api', catalog);
 app.route('/api', orders);
 app.route('/api', content);
+app.route('/api', landingPages);
 app.route('/api', reviews);
 app.route('/api/support', support);
 app.route('/api/account', account);
@@ -97,6 +100,7 @@ app.post('/api/dev-report/trigger/:token', async (c) => {
 // Nested (not mounted separately) so these inherit the admin auth guard.
 admin.route('/analytics', analytics);
 admin.route('/content', adminContent);
+admin.route('/landing-pages', adminLandingPages);
 app.route('/api/admin', admin);
 
 app.notFound((c) => c.json({ error: `No route for ${c.req.method} ${new URL(c.req.url).pathname}` }, 404));

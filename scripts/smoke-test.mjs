@@ -159,6 +159,35 @@ async function main() {
   const noAuthAnalytics = await api('/api/admin/analytics/overview');
   check('analytics rejects anonymous callers', noAuthAnalytics.status === 401, `status ${noAuthAnalytics.status}`);
 
+  console.log('\nCampaign landing pages');
+  const campaignSlug = `smoke-campaign-${Date.now()}`;
+  const campaignContent = { headline: 'Campaign smoke test', heroImage: '/files/demo.webp', ctaLabel: 'Order now' };
+  const campaign = await api('/api/admin/landing-pages', {
+    method: 'POST', auth: true, expect: 201,
+    body: { title: 'Campaign smoke test', slug: campaignSlug, content: campaignContent, published: false },
+  });
+  check('draft landing page is created', Number.isInteger(campaign.body.id));
+  const privateCampaign = await api(`/api/landing-pages/${campaignSlug}`);
+  check('draft campaign is not publicly visible', privateCampaign.status === 404);
+  const duplicateCampaign = await api('/api/admin/landing-pages', {
+    method: 'POST', auth: true,
+    body: { title: 'Duplicate campaign', slug: campaignSlug, content: {}, published: true },
+  });
+  check('duplicate campaign slug is rejected', duplicateCampaign.status === 409);
+  await api(`/api/admin/landing-pages/${campaign.body.id}`, {
+    method: 'PATCH', auth: true, expect: 200, body: { published: true },
+  });
+  const liveCampaign = await api(`/api/landing-pages/${campaignSlug}`, { expect: 200 });
+  check('published campaign content is publicly readable', liveCampaign.body.page.content.headline === campaignContent.headline);
+  await api(`/api/admin/landing-pages/${campaign.body.id}`, {
+    method: 'PATCH', auth: true, expect: 200,
+    body: { title: 'Updated campaign', content: { ...campaignContent, headline: 'Updated headline' } },
+  });
+  const updatedCampaign = await api(`/api/landing-pages/${campaignSlug}`, { expect: 200 });
+  check('campaign edits are reflected publicly', updatedCampaign.body.page.content.headline === 'Updated headline');
+  await api(`/api/admin/landing-pages/${campaign.body.id}`, { method: 'DELETE', auth: true, expect: 200 });
+  check('campaign is removed from public access', (await api(`/api/landing-pages/${campaignSlug}`)).status === 404);
+
   console.log('\nFree-delivery threshold');
   // A threshold of 0 must mean "always charge", not "everything is free".
   const priorThreshold = (await api('/api/settings', { expect: 200 })).body.free_shipping_over;

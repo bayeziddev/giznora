@@ -20,6 +20,7 @@ const NAV = [
   { to: '/admin/calculators', icon: '🧮', label: 'Calculators' },
   { to: '/admin/inventory', icon: '🏷️', label: 'Inventory' },
   { to: '/admin/offers', icon: '📣', label: 'Offers & popup' },
+  { to: '/admin/landing-pages', icon: '🚀', label: 'Landing pages' },
   { to: '/admin/content', icon: '📝', label: 'Content' },
   { to: '/admin/settings', icon: '⚙️', label: 'Settings' },
 ];

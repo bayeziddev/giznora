@@ -10,6 +10,7 @@ import { Track } from './pages/Track';
 import { ContentPage } from './pages/ContentPage';
 import { Blog, BlogPost } from './pages/Blog';
 import { Press } from './pages/Press';
+import { LandingPage } from './pages/LandingPage';
 import { Account } from './pages/Account';
 import { Invoice } from './pages/Invoice';
 import { AdminLayout } from './pages/admin/AdminLayout';
@@ -26,6 +27,7 @@ import { Calculators } from './pages/admin/Calculators';
 import { Guide } from './pages/admin/Guide';
 import { Preview } from './pages/admin/Preview';
 import { Staff } from './pages/admin/Staff';
+import { LandingPages } from './pages/admin/LandingPages';
 
 // Vite's BASE_URL is "/" on a custom domain and "/<repo>/" on project Pages.
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -39,6 +41,7 @@ export function App() {
           <CartProvider>
           <BrowserRouter basename={basename || undefined}>
             <Routes>
+              <Route path="/lp/:slug" element={<LandingPage />} />
               <Route element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="catalog" element={<Catalog />} />
@@ -65,6 +68,7 @@ export function App() {
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="calculators" element={<Calculators />} />
                 <Route path="content" element={<Content />} />
+                <Route path="landing-pages" element={<LandingPages />} />
                 {/* The offer popup deserves its own address — it was too easy to miss as a tab. */}
                 <Route path="offers" element={<Content initialTab="banners" />} />
                 <Route path="guide" element={<Guide />} />
