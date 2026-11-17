@@ -24,6 +24,7 @@ knowledge needed.
 13. [Customer accounts](#13-customer-accounts)
 14. [Your daily routine](#14-your-daily-routine)
 15. [Common questions](#15-common-questions)
+16. [Landing pages for advertising campaigns](#16-landing-pages-for-advertising-campaigns)
 
 ---
 
@@ -585,3 +586,11 @@ They need the order number and the phone number they ordered with, at the
 
 **I forgot my password.**
 Update the `ADMIN_PASSWORD` secret in GitHub and re-run the **Deploy** workflow.
+
+## 16. Landing pages for advertising campaigns
+
+Open **Admin → Landing pages** to create as many campaign pages as needed. Add a title and unique shareable slug, then enter the campaign headline, short pitch, product name, price, offer image, benefits and optional image/text detail blocks. Large uploaded photos are resized and converted to WebP in the browser before reaching the existing image store; below-the-fold campaign images are lazy-loaded. A hosted image URL can also be pasted if image uploads are unavailable.
+
+Select a live catalog product when the main CTA should add that item as a direct purchase and open the existing checkout flow. Without a catalog product, set the CTA destination yourself (for example `/catalog`, `/cart`, `/checkout`, a product link, or an HTTPS campaign destination). Choose **Order now** or **Shop now** for the button label. Set an optional offer end date to display a real countdown; expired offers stop counting and no timer appears when no expiry is set.
+
+Save as a draft while preparing the campaign, or publish it when ready. Published pages are available at `/lp/<slug>` and can be copied into an ad; drafts are not publicly readable. Pages can be edited, returned to draft, or deleted from the manager. A deployment applies the new D1 migration automatically through the repository's existing deployment workflow.

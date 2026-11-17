@@ -1,0 +1,7 @@
+# Feature outcomes
+
+- [x] **Admin-created unlimited landing pages:** “এডমিন ড্যাশবোর্ড থেকে যেনো সরাসরি unlimited landing পেইজ ক্রিয়েট করা যায়”; admin can create, edit, publish/unpublish, and delete any number of pages. Each page supports uploaded/URL images, product details, description, image/text blocks, `Shop now` / `Order now` CTA labels and destination, unique shareable slug and draft/live state.
+- [x] **Fast, mobile-first ad landing page:** “এডস এর জন্য ব্যাবহার করা হবে”; “ম্যাক্সিমাম স্পিড ইমেজ অফার টাইমিং ওর্ডার বাটন”; hero artwork is client-compressed to WebP before upload, hero is prioritized, detail images lazy-load, optional true expiry countdown is shown, and mobile pages include a sticky order CTA. Linking a catalog product sends it through the existing direct-checkout flow.
+- [x] **Reference/Giznora design:** responsive single-column campaign structure with product image/details, offer emphasis, repeat order actions and Giznora navy/orange visual identity.
+- [x] **Existing backend conventions:** additive D1 persistence, authenticated admin CRUD, public published-only lookup, unique slug validation and audit records reuse existing Worker/auth/storage/API patterns.
+- [x] **Verification:** local migration applied successfully; worker/web TypeScript checks and production build pass; complete local Worker/D1 smoke suite passes (165 passed, 0 failed), including campaign draft, duplicate slug, publish, public lookup, edit and delete behavior.
