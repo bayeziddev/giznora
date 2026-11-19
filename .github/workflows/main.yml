@@ -126,6 +126,8 @@ jobs:
       - name: Prepare SPA fallback
         run: |
           cp web/dist/index.html web/dist/404.html
+          mkdir -p web/dist/checkout
+          cp web/dist/index.html web/dist/checkout/index.html
           echo '/* /index.html 200' > web/dist/_redirects
           touch web/dist/.nojekyll
 
