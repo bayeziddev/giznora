@@ -14,6 +14,15 @@ import {
 import { Empty, Spinner } from '../components/ui';
 import { OrderSummary, useQuote } from './Cart';
 import { useSeo } from '../lib/seo';
+import {
+  byId,
+  DISTRICTS,
+  DIVISIONS,
+  optionLabel,
+  postcodeExists,
+  UNIONS,
+  UPAZILAS,
+} from '../lib/bangladeshGeocode';
 
 /** Delivery zones, priced from store settings so the shop can change the rates. */
 const ZONES: { key: DeliveryZone; label: string; hint: string }[] = [
@@ -84,6 +93,29 @@ export function Checkout() {
     [direct, cart.items],
   );
   const [zone, setZone] = useState<DeliveryZone>('outside');
+  const [location, setLocation] = useState({
+    divisionId: '',
+    districtId: '',
+    upazilaId: '',
+    unionId: '',
+    postcode: '',
+  });
+  const selectedDivision = useMemo(() => byId(DIVISIONS, location.divisionId), [location.divisionId]);
+  const selectedDistrict = useMemo(() => byId(DISTRICTS, location.districtId), [location.districtId]);
+  const selectedUpazila = useMemo(() => byId(UPAZILAS, location.upazilaId), [location.upazilaId]);
+  const selectedUnion = useMemo(() => byId(UNIONS, location.unionId), [location.unionId]);
+  const districts = useMemo(
+    () => DISTRICTS.filter((row) => String(row.division_id) === location.divisionId),
+    [location.divisionId],
+  );
+  const upazilas = useMemo(
+    () => UPAZILAS.filter((row) => String(row.district_id) === location.districtId),
+    [location.districtId],
+  );
+  const unions = useMemo(
+    () => UNIONS.filter((row) => String(row.upazilla_id ?? row.upazila_id) === location.upazilaId),
+    [location.upazilaId],
+  );
 
   // The zone rates are shop settings, so the picker shows what each one costs.
   const [settings, setSettings] = useState<StoreSettings | null>(null);
@@ -157,6 +189,31 @@ export function Checkout() {
   async function submit(event: FormEvent) {
     event.preventDefault();
     setError('');
+
+    if (!selectedDivision || !selectedDistrict || !selectedUpazila || !selectedUnion) {
+      setError('Please select your division, district, upazila and union.');
+      return;
+    }
+    if (!postcodeExists(location.postcode)) {
+      setError('Please enter a valid Bangladesh postcode.');
+      return;
+    }
+
+    const checkoutForm = {
+      ...form,
+      city: selectedDistrict.name,
+      address: [
+        form.address.trim(),
+        `Union: ${selectedUnion.name}`,
+        `Upazila: ${selectedUpazila.name}`,
+        `District: ${selectedDistrict.name}`,
+        `Division: ${selectedDivision.name}`,
+        `Postcode: ${location.postcode.trim()}`,
+      ]
+        .filter(Boolean)
+        .join(', '),
+    };
+    setForm(checkoutForm);
     setSubmitting(true);
 
     try {
@@ -164,7 +221,7 @@ export function Checkout() {
         method: 'POST',
         customerAuth: true,
         body: {
-          ...form,
+          ...checkoutForm,
           delivery_zone: zone,
           items: lineItems.map((i) => ({ product_id: i.product_id, qty: i.qty })),
         },
@@ -354,30 +411,115 @@ export function Checkout() {
                 </div>
               </div>
 
+              <div className="field">
+                <label htmlFor="email">Email (optional)</label>
+                <input
+                  id="email"
+                  type="email"
+                  className="input"
+                  maxLength={160}
+                  value={form.customer_email}
+                  onChange={(e) => set('customer_email', e.target.value)}
+                  autoComplete="email"
+                />
+              </div>
+
               <div className="form-grid">
                 <div className="field">
-                  <label htmlFor="email">Email (optional)</label>
-                  <input
-                    id="email"
-                    type="email"
-                    className="input"
-                    maxLength={160}
-                    value={form.customer_email}
-                    onChange={(e) => set('customer_email', e.target.value)}
-                    autoComplete="email"
-                  />
+                  <label htmlFor="division">Division *</label>
+                  <select
+                    id="division"
+                    className="select"
+                    required
+                    value={location.divisionId}
+                    onChange={(e) =>
+                      setLocation({ divisionId: e.target.value, districtId: '', upazilaId: '', unionId: '', postcode: '' })
+                    }
+                  >
+                    <option value="">Select division</option>
+                    {DIVISIONS.map((row) => (
+                      <option key={row.id} value={row.id}>{optionLabel(row)}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="field">
-                  <label htmlFor="city">City / district *</label>
+                  <label htmlFor="district">District *</label>
+                  <select
+                    id="district"
+                    className="select"
+                    required
+                    disabled={!selectedDivision}
+                    value={location.districtId}
+                    onChange={(e) =>
+                      setLocation((prev) => ({ ...prev, districtId: e.target.value, upazilaId: '', unionId: '', postcode: '' }))
+                    }
+                  >
+                    <option value="">Select district</option>
+                    {districts.map((row) => (
+                      <option key={row.id} value={row.id}>{optionLabel(row)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-grid">
+                <div className="field">
+                  <label htmlFor="upazila">Upazila *</label>
+                  <select
+                    id="upazila"
+                    className="select"
+                    required
+                    disabled={!selectedDistrict}
+                    value={location.upazilaId}
+                    onChange={(e) =>
+                      setLocation((prev) => ({ ...prev, upazilaId: e.target.value, unionId: '', postcode: '' }))
+                    }
+                  >
+                    <option value="">Select upazila</option>
+                    {upazilas.map((row) => (
+                      <option key={row.id} value={row.id}>{optionLabel(row)}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="field">
+                  <label htmlFor="union">Union *</label>
+                  <select
+                    id="union"
+                    className="select"
+                    required
+                    disabled={!selectedUpazila}
+                    value={location.unionId}
+                    onChange={(e) => setLocation((prev) => ({ ...prev, unionId: e.target.value }))}
+                  >
+                    <option value="">Select union</option>
+                    {unions.map((row) => (
+                      <option key={row.id} value={row.id}>{optionLabel(row)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-grid">
+                <div className="field">
+                  <label htmlFor="postcode">Postcode *</label>
                   <input
-                    id="city"
+                    id="postcode"
                     className="input"
                     required
-                    maxLength={80}
-                    value={form.city}
-                    onChange={(e) => set('city', e.target.value)}
-                    autoComplete="address-level2"
+                    inputMode="numeric"
+                    maxLength={10}
+                    placeholder="e.g. 1206"
+                    value={location.postcode}
+                    onChange={(e) => setLocation((prev) => ({ ...prev, postcode: e.target.value }))}
+                    autoComplete="postal-code"
                   />
+                  <span className="hint">Use your Bangladesh postal code.</span>
+                </div>
+                <div className="field">
+                  <label>Selected area</label>
+                  <div className="input" style={{ minHeight: 42, display: 'flex', alignItems: 'center', color: 'var(--muted)' }}>
+                    {selectedDistrict ? `${selectedDistrict.name}, Bangladesh` : 'Choose your location above'}
+                  </div>
                 </div>
               </div>
 
