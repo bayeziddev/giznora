@@ -126,6 +126,7 @@ jobs:
       - name: Prepare SPA fallback
         run: |
           cp web/dist/index.html web/dist/404.html
+          echo '/* /index.html 200' > web/dist/_redirects
           touch web/dist/.nojekyll
 
       - name: Deploy storefront to Cloudflare Pages
@@ -135,8 +136,8 @@ jobs:
         run: |
           URL="https://giznora-elz.pages.dev"
           for i in $(seq 1 12); do
-            if curl -fsS --max-time 10 "$URL/" | grep -qi 'Giznora'; then
-              echo "Storefront is live: $URL"
+            if curl -fsS --max-time 10 "$URL/checkout" | grep -qi 'Giznora'; then
+              echo "Storefront and checkout are live: $URL"
               exit 0
             fi
             echo "waiting for Cloudflare Pages deployment ($i/12)…"
